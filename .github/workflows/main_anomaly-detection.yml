@@ -11,8 +11,6 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
-    timeout-minutes: 720 # Increase
   build:
     runs-on: ubuntu-latest
 
@@ -47,6 +45,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 720 # Increase
     needs: build
     environment:
       name: 'Production'
