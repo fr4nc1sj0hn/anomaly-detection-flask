@@ -1,5 +1,0 @@
-pocdev_high = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=g91fb8c6dd04bb1_pocdev_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
-
-pocdev_low = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=g91fb8c6dd04bb1_pocdev_low.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
-
-pocdev_medium = (description= (retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1522)(host=adb.us-phoenix-1.oraclecloud.com))(connect_data=(service_name=g91fb8c6dd04bb1_pocdev_medium.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
