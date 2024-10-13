@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Refreshing Area Chart</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <h2>Area Chart with Anomalies Highlighted (Auto Refresh every 5 seconds)</h2>
+    <div id="area-chart"></div>
+
+    <script>
+        let currentPage = 0;  // Start with the first page
+
+        // Function to fetch data from the Flask API
+        function generateData() {
+            return $.ajax({
+                url: '/api/water-consumption-data',  // Flask route to get data
+                method: 'GET',
+                data: { page: currentPage },  // Pass the current page number
+                dataType: 'json'
+            });
+        }
+
+        // Function to update the chart
+        function updateChart() {
+            generateData().done(function(data) {
+                // Combine data into an array of objects
+                const combinedData = data.xValues.map((date, index) => ({
+                    date: new Date(date),  // Convert to Date object
+                    consumption: data.yValues[index],
+                    status: data.statuses[index]
+                }));
+
+                // Sort the combined data by consumption_date
+                combinedData.sort((a, b) => a.date - b.date);
+
+                // Prepare arrays for plotting
+                const anomalyX = [];
+                const anomalyY = [];
+                const normalX = [];
+                const normalY = [];
+
+                combinedData.forEach(item => {
+                    if (item.status === 'Anomaly') {
+                        anomalyX.push(item.date);
+                        anomalyY.push(item.consumption);
+                    } else {
+                        normalX.push(item.date);
+                        normalY.push(item.consumption);
+                    }
+                });
+
+                // Base area chart
+                let areaTrace = {
+                    x: normalX,
+                    y: normalY,
+                    mode: 'lines',  // Line for area chart
+                    fill: 'tozeroy',  // Fill area under the line
+                    type: 'scatter',
+                    line: {color: 'lightblue'},
+                    name: 'Water Consumption'
+                };
+
+                // Anomalies points
+                let anomalyTrace = {
+                    x: anomalyX,
+                    y: anomalyY,
+                    mode: 'markers',  // Highlight individual points
+                    type: 'scatter',
+                    marker: {color: 'red', size: 10},
+                    name: 'Anomalies'
+                };
+
+                let layout = {
+                    xaxis: {
+                        title: 'Consumption Date and Time',
+                        type: 'date',  // Set the x-axis to date type
+                        tickformat: '%Y-%m-%d %H:%M:%S',  // Date format for ticks (up to seconds)
+                        tickfont: {size: 8}  // Set font size for x-axis labels
+                    },
+                    yaxis: {range: [0, 1000]},
+                    showlegend: true
+                };
+
+                Plotly.newPlot('area-chart', [areaTrace, anomalyTrace], layout);
+
+                // Increment the page number for the next refresh
+                currentPage += 1;
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.log("Failed to fetch data: " + textStatus);
+            });
+        }
+
+        // Initial plot rendering
+        updateChart();
+
+        // Auto-refresh every 5 seconds
+        setInterval(function() {
+            updateChart();
+        }, 5000);
+
+    </script>
+</body>
+</html>
