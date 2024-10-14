@@ -99,17 +99,26 @@ Note: A /creds/.empty file is included to ensure the folder structure remains in
 Create the following environment variables under Settings > Environment Variables:
 
 `AZURE_STORAGE_CONNECTION_STRING`: Get it from Storage Account > Access Keys.
+
 `CONFIG_DIR`="creds"
+
 `USER`: Your Oracle DB OML User (created in part 1).
+
 `PASSWORD`: Your Oracle DB OML User password.
+
 `DSN`: Choose a DSN from your tnsnames.ora.
+
 `WALLET_LOCATION`="creds"
+
 `WALLET_PASSWORD`: Password from your wallet (downloaded in ADW Details in part 1).
+
 `CONFIG_CONTAINER`: Name of the container you created above.
 
 ### Storage Account
 Upload the following files in the container you created:
+
 `ewallet.sso`
+
 `tnsnames.ora`
 
 These files can be found in the unzipped wallet from part 1.
