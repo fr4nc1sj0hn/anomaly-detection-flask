@@ -1,4 +1,5 @@
 import os
+from azure.storage.blob import BlobServiceClient
 
 from flask import (Flask, redirect, render_template, request,
                    send_from_directory, url_for, jsonify)
@@ -15,13 +16,50 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 config_dir = os.path.join(base_dir, os.environ.get("config_dir"))
 wallet_location = os.path.join(base_dir, os.environ.get("wallet_location"))
 
+# Local directory for storing downloaded files
+creds_dir = os.path.join(base_dir, 'creds')
+
+# Ensure creds directory exists
+if not os.path.exists(creds_dir):
+    os.makedirs(creds_dir)
 
 # Define the paths for 'ewallet.pem' and 'tnsnames.ora'
-pem_path = os.path.join(base_dir, 'creds/ewallet.pem')
-tns_path = os.path.join(base_dir, 'creds/tnsnames.ora')
+pem_path = os.path.join(creds_dir, 'ewallet.pem')
+tns_path = os.path.join(creds_dir, 'tnsnames.ora')
+
+def download_wallet_files():
+    try:
+        # Initialize the BlobServiceClient
+        blob_service_client = BlobServiceClient.from_connection_string(os.getenv("AZURE_STORAGE_CONNECTION_STRING"))
+        
+        # List of files to download (blob names)
+        files_to_download = [
+            {"blob": "ewallet.pem", "local": pem_path},
+            {"blob": "tnsnames.ora", "local": tns_path}
+        ]
+        
+        # Container name in Azure Blob Storage
+        container_name = "config"  # This should still be 'config'
+
+        # Loop through and download each file
+        for file_info in files_to_download:
+            blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_info["blob"])
+            
+            print(file_info)
+            # Download the file and save it locally
+            with open(file_info["local"], "wb") as download_file:
+                download_file.write(blob_client.download_blob().readall())
+                
+            print(f"Downloaded {file_info['blob']} to {file_info['local']}")
+    
+    except Exception as e:
+        print(f"Error downloading files from Azure Blob Storage: {str(e)}")
 
 def get_db_connection():
     try:
+        # Download wallet files from Azure Blob Storage
+
+        # Establish the Oracle DB connection
         connection = oracledb.connect(
             config_dir=config_dir,
             user=os.getenv("user"),
@@ -37,8 +75,9 @@ def get_db_connection():
         print(f"Error connecting to the database: {error.message}")
         return None
 
-@app.route('/api/water-consumption-data', methods=['GET'])
+download_wallet_files()
 
+@app.route('/api/water-consumption-data', methods=['GET'])
 def water_consumption_data():
     try:
         # Get the page number from the query parameters (default to 0 for the first page)
@@ -78,8 +117,6 @@ def water_consumption_data():
         if connection:
             connection.close()
 
-
-
 @app.route('/')
 def index():
    print('Request for index page received')
@@ -109,4 +146,4 @@ def hello():
 
 
 if __name__ == '__main__':
-   app.run()
+    app.run()
