@@ -11,10 +11,10 @@ app = Flask(__name__)
 load_dotenv()
 
 base_dir = os.path.dirname(os.path.abspath(__file__))
-config_dir = os.path.join(base_dir, os.getenv("config_dir"))
-wallet_location = os.path.join(base_dir, os.getenv("wallet_location"))
-pem_content = os.getenv("pem_content")
-tns = os.getenv("tns")
+config_dir = os.path.join(base_dir, os.environ.get("config_dir"))
+wallet_location = os.path.join(base_dir, os.environ.get("wallet_location"))
+pem_content = os.environ.get("pem_content")
+tns = os.environ.get("tns")
 
 print("base_dir:", base_dir)
 print("config_dir:", config_dir)
@@ -31,10 +31,10 @@ with open('./creds/tnsnames.ora', 'w') as pem_file:
 def get_db_connection():
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
-    config_dir = os.path.join(base_dir, os.getenv("config_dir"))
-    wallet_location = os.path.join(base_dir, os.getenv("wallet_location"))
-    pem_content = os.getenv("pem_content")
-    tns = os.getenv("tns")
+    config_dir = os.path.join(base_dir, os.environ.get("config_dir"))
+    wallet_location = os.path.join(base_dir, os.environ.get("wallet_location"))
+    pem_content = os.environ.get("pem_content")
+    tns = os.environ.get("tns")
 
     print("base_dir:", base_dir)
     print("config_dir:", config_dir)
