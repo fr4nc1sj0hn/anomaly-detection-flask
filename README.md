@@ -39,11 +39,10 @@ git push origin main
 Note: A /creds/.empty file is included to ensure the folder structure remains intact when pushed to GitHub.
 
 ## Azure App Service Setup
-Steps to Create the Free App Service:
-Log in to Azure Portal.
-Search for and navigate to App Services.
-Click + Create Web App to create a new app service.
-Fill in the basic details:
+
+- Log in to Azure Portal. Search for and navigate to App Services.
+- Click + Create Web App to create a new app service.
+- Fill in the basic details:
 Subscription: Choose your subscription.
 Resource Group: Select or create a resource group.
 Name: Enter a unique app name.
@@ -51,14 +50,14 @@ Publish: Choose Code.
 Runtime Stack: Select Python 3.11.
 Region: Choose a nearby region.
 App Service Plan: Create a new one with Free (F1) tier.
-Review and create the app service.
-After deployment, access your app via the provided URL in the Overview pane.
+- Review and create the app service.
+- After deployment, access your app via the provided URL in the Overview pane.
 
 ## Azure Storage Account Setup
-Steps to Create a Storage Account:
-Navigate to Storage Accounts in the Azure Portal.
-Click + Create.
-Fill in the details:
+
+- Navigate to Storage Accounts in the Azure Portal.
+- Click + Create.
+- Fill in the details:
 Subscription: Select your subscription.
 Resource Group: Select or create a group.
 Storage Account Name: Provide a globally unique name.
@@ -66,10 +65,16 @@ Region: Choose a region.
 Primary Service: Select Azure Blob Storage or Azure Data Lake Storage Gen 2.
 Performance: Choose Standard.
 Redundancy: Choose Locally-redundant storage (LRS).
-Review and create the storage account.
-After deployment, create a container:
-Name: config (or any name, adjust in code accordingly).
-Public Access Level: Choose Private.
+- Review and create the storage account.
+- After deployment, create a container:
+-- Navigate to "Containers"
+-- In the Storage Account resource page, on the left-hand menu under Data storage, click Containers.
+-- Create a New Container
+-- In the Containers page, click + Container to create a new container.
+-- Configure the Container
+Name: config (anything as long as you adjust it in the code)
+Public Access Level: Choose Private (no anonymous access)
+
 Configuration
 App Service
 Create the following environment variables under Settings > Environment Variables:
