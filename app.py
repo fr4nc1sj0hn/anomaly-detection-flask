@@ -10,45 +10,53 @@ app = Flask(__name__)
 
 load_dotenv()
 
+# Define base directories and file paths
 base_dir = os.path.dirname(os.path.abspath(__file__))
 config_dir = os.path.join(base_dir, os.environ.get("config_dir"))
 wallet_location = os.path.join(base_dir, os.environ.get("wallet_location"))
+
+# Environment variables for pem content and TNS
 pem_content = os.environ.get("pem_content")
 tns = os.environ.get("tns")
 
-print("base_dir:", base_dir)
-print("config_dir:", config_dir)
-print("pem_content:", pem_content)
-print("wallet_location:", wallet_location)
+# Define the paths for 'ewallet.pem' and 'tnsnames.ora'
+pem_path = os.path.join(base_dir, 'creds/ewallet.pem')
+tns_path = os.path.join(base_dir, 'creds/tnsnames.ora')
 
-with open('./creds/ewallet.pem', 'w') as pem_file:
-    pem_file.write(pem_content)
+# Check if 'ewallet.pem' already exists before writing
+if not os.path.exists(pem_path):
+    with open(pem_path, 'w') as pem_file:
+        pem_file.write(pem_content)
+    print(f"'{pem_path}' written successfully.")
+else:
+    print(f"'{pem_path}' already exists. Skipping write.")
 
-with open('./creds/tnsnames.ora', 'w') as pem_file:
-    pem_file.write(tns)
+# Check if 'tnsnames.ora' already exists before writing
+if not os.path.exists(tns_path):
+    with open(tns_path, 'w') as tns_file:
+        tns_file.write(tns)
+    print(f"'{tns_path}' written successfully.")
+else:
+    print(f"'{tns_path}' already exists. Skipping write.")
 
-# Database connection function
+# Database connection function with error handling
 def get_db_connection():
-
-    base_dir = os.path.dirname(os.path.abspath(__file__))
-    config_dir = os.path.join(base_dir, os.environ.get("config_dir"))
-    wallet_location = os.path.join(base_dir, os.environ.get("wallet_location"))
-    pem_content = os.environ.get("pem_content")
-    tns = os.environ.get("tns")
-
-    print("base_dir:", base_dir)
-    print("config_dir:", config_dir)
-    print("pem_content:", pem_content)
-    print("wallet_location:", wallet_location)
-
-    return oracledb.connect(
-         config_dir=  config_dir,
-         user=os.getenv("user"),
-         password=os.getenv("password"),
-         dsn="pocdev_high",
-         wallet_location=wallet_location,
-         wallet_password=os.getenv("wallet_password")
-    )
+    try:
+        connection = oracledb.connect(
+            config_dir=config_dir,
+            user=os.getenv("user"),
+            password=os.getenv("password"),
+            dsn="pocdev_high",
+            wallet_location=wallet_location,
+            wallet_password=os.getenv("wallet_password")
+        )
+        print("Database connection successful!")
+        return connection
+    except oracledb.DatabaseError as e:
+        # Log error and provide feedback
+        error, = e.args
+        print(f"Error connecting to the database: {error.message}")
+        return None
 
 @app.route('/api/water-consumption-data', methods=['GET'])
 
