@@ -13,8 +13,8 @@ load_dotenv()
 
 # Define base directories and file paths
 base_dir = os.path.dirname(os.path.abspath(__file__))
-config_dir = os.path.join(base_dir, os.environ.get("config_dir"))
-wallet_location = os.path.join(base_dir, os.environ.get("wallet_location"))
+config_dir = os.path.join(base_dir, os.environ.get("CONFIG_DIR"))
+wallet_location = os.path.join(base_dir, os.environ.get("WALLET_LOCATION"))
 
 # Local directory for storing downloaded files
 creds_dir = os.path.join(base_dir, 'creds')
@@ -32,20 +32,19 @@ def download_wallet_files():
         # Initialize the BlobServiceClient
         blob_service_client = BlobServiceClient.from_connection_string(os.getenv("AZURE_STORAGE_CONNECTION_STRING"))
         
-        # List of files to download (blob names)
         files_to_download = [
             {"blob": "ewallet.pem", "local": pem_path},
             {"blob": "tnsnames.ora", "local": tns_path}
         ]
         
         # Container name in Azure Blob Storage
-        container_name = "config"  # This should still be 'config'
+        container_name = os.getenv("CONFIG_CONTAINER")
 
         # Loop through and download each file
         for file_info in files_to_download:
             blob_client = blob_service_client.get_blob_client(container=container_name, blob=file_info["blob"])
             
-            print(file_info)
+
             # Download the file and save it locally
             with open(file_info["local"], "wb") as download_file:
                 download_file.write(blob_client.download_blob().readall())
@@ -62,11 +61,11 @@ def get_db_connection():
         # Establish the Oracle DB connection
         connection = oracledb.connect(
             config_dir=config_dir,
-            user=os.getenv("user"),
-            password=os.getenv("password"),
-            dsn="pocdev_high",
+            user=os.getenv("USER"),
+            password=os.getenv("PASSWORD"),
+            dsn=os.getenv("DSN"),
             wallet_location=wallet_location,
-            wallet_password=os.getenv("wallet_password")
+            wallet_password=os.getenv("WALLET_PASSWORD")
         )
         return connection
     except oracledb.DatabaseError as e:
