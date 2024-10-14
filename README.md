@@ -1,10 +1,22 @@
-# Deploy a Python (Flask) web app to Azure App Service - Sample Application
+# Anomaly Detection using ADW Part 2 - Flask Application in Azure
 
-This is the sample Flask application for the Azure Quickstart [Deploy a Python (Django or Flask) web app to Azure App Service](https://docs.microsoft.com/en-us/azure/app-service/quickstart-python). For instructions on how to create the Azure resources and deploy the application to Azure, refer to the Quickstart article.
+## Table of Contents
+- [Tech Stack](#tech-stack)
+- [Repository Setup](#repository-setup)
+- [Azure App Service Setup](#azure-app-service-setup)
+- [Azure Storage Account Setup](#azure-storage-account-setup)
+- [Configuration](#configuration)
+- [Running the App Locally](#running-the-app-locally)
+- [Deployment Pipeline Setup](#deployment-pipeline-setup)
+- [Code Explanation](#code-explanation)
 
-Sample applications are available for the other frameworks here:
+## Tech Stack
+- Oracle Autonomous Data Warehouse
+- Flask
+- Plotly.js (for charts)
 
-* Django [https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart](https://github.com/Azure-Samples/msdocs-python-django-webapp-quickstart)
-* FastAPI [https://github.com/Azure-Samples/msdocs-python-fastapi-webapp-quickstart](https://github.com/Azure-Samples/msdocs-python-fastapi-webapp-quickstart)
+## Repository Setup
+Clone the repository using:
 
-If you need an Azure account, you can [create one for free](https://azure.microsoft.com/en-us/free/).
+```bash
+git clone https://github.com/fr4nc1sj0hn/anomaly-detection-flask.git
