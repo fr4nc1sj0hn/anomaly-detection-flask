@@ -15,31 +15,11 @@ base_dir = os.path.dirname(os.path.abspath(__file__))
 config_dir = os.path.join(base_dir, os.environ.get("config_dir"))
 wallet_location = os.path.join(base_dir, os.environ.get("wallet_location"))
 
-# Environment variables for pem content and TNS
-pem_content = os.environ.get("pem_content")
-tns = os.environ.get("tns")
 
 # Define the paths for 'ewallet.pem' and 'tnsnames.ora'
 pem_path = os.path.join(base_dir, 'creds/ewallet.pem')
 tns_path = os.path.join(base_dir, 'creds/tnsnames.ora')
 
-# Check if 'ewallet.pem' already exists before writing
-if not os.path.exists(pem_path):
-    with open(pem_path, 'w') as pem_file:
-        pem_file.write(pem_content)
-    print(f"'{pem_path}' written successfully.")
-else:
-    print(f"'{pem_path}' already exists. Skipping write.")
-
-# Check if 'tnsnames.ora' already exists before writing
-if not os.path.exists(tns_path):
-    with open(tns_path, 'w') as tns_file:
-        tns_file.write(tns)
-    print(f"'{tns_path}' written successfully.")
-else:
-    print(f"'{tns_path}' already exists. Skipping write.")
-
-# Database connection function with error handling
 def get_db_connection():
     try:
         connection = oracledb.connect(
@@ -50,7 +30,6 @@ def get_db_connection():
             wallet_location=wallet_location,
             wallet_password=os.getenv("wallet_password")
         )
-        print("Database connection successful!")
         return connection
     except oracledb.DatabaseError as e:
         # Log error and provide feedback
@@ -68,7 +47,6 @@ def water_consumption_data():
 
         # Connect to the database
         connection = get_db_connection()
-        print(connection)
 
         cursor = connection.cursor()
 
@@ -78,13 +56,10 @@ def water_consumption_data():
         ORDER BY CONSUMPTION_DATE ASC
         OFFSET {offset} ROWS FETCH NEXT 100 ROWS ONLY
         """
-        # Query data from the Oracle DB view
-        cursor.execute(sql)
 
-        # Fetch data
+        cursor.execute(sql)
         rows = cursor.fetchall()
 
-        # Structure the data to send as JSON
         data = {
             'xValues': [row[0].isoformat() for row in rows],  # Using CONSUMPTION_DATE column
             'yValues': [row[1] for row in rows],
@@ -104,37 +79,6 @@ def water_consumption_data():
             connection.close()
 
 
-# Flask route to fetch data from the Oracle DB view
-@app.route('/fetch-view-data', methods=['GET'])
-def fetch_view_data():
-    try:
-        # Get database connection
-        connection = get_db_connection()
-        cursor = connection.cursor()
-
-        # Execute query on the Oracle DB view
-        cursor.execute("SELECT * FROM water_consumption_data_v")
-
-        # Fetch all rows from the view
-        rows = cursor.fetchall()
-
-        # Get column names
-        columns = [col[0] for col in cursor.description]
-
-        # Format rows into list of dictionaries
-        data = [dict(zip(columns, row)) for row in rows]
-
-        return jsonify(data)
-
-    except oracledb.DatabaseError as e:
-        error, = e.args
-        return jsonify({'error': str(error)}), 500
-
-    finally:
-        if cursor:
-            cursor.close()
-        if connection:
-            connection.close()
 
 @app.route('/')
 def index():
