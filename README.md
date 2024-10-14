@@ -181,6 +181,7 @@ FROM (
 ```
 
 `app.py`
+
 The rest of the code is self explanatory so let me focus on `water_consumption_data`.
 this API can be invoked on this route: `/api/water-consumption-data`
 
@@ -188,6 +189,7 @@ To simulate the arrival of new data, a paging mechanism is implemented and is co
 
 
 `templates/chart.html`
+
 This contains the script for rendering the plotly.js chart.
 
 `generateData` issues an AJAX call which returns 100 rows of data controlled by the page number
