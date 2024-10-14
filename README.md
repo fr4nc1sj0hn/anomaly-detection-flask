@@ -43,6 +43,7 @@ Note: A /creds/.empty file is included to ensure the folder structure remains in
 - Log in to Azure Portal. Search for and navigate to App Services.
 - Click + Create Web App to create a new app service.
 - Fill in the basic details:
+  
   **Subscription**: Choose your subscription.
   **Resource Group**: Select or create a resource group.
   **Name**: Enter a unique app name.
@@ -59,6 +60,7 @@ Note: A /creds/.empty file is included to ensure the folder structure remains in
 - Navigate to Storage Accounts in the Azure Portal.
 - Click + Create.
 - Fill in the details:
+  
   **Subscription**: Select your subscription.
   **Resource Group**: Select or create a group.
   **Storage Account Name**: Provide a globally unique name.
@@ -69,11 +71,13 @@ Note: A /creds/.empty file is included to ensure the folder structure remains in
   
 - Review and create the storage account.
 - After deployment, create a container:
+  
       Navigate to "Containers"
       In the Storage Account resource page, on the left-hand menu under Data storage, click Containers.
       Create a New Container
       In the Containers page, click + Container to create a new container.
       Configure the Container
+  
       **Name**: config (anything as long as you adjust it in the code)
       **Public Access Level**: Choose Private (no anonymous access)
 
