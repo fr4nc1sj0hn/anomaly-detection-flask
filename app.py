@@ -10,17 +10,6 @@ app = Flask(__name__)
 
 load_dotenv()
 
-base_dir = os.path.dirname(os.path.abspath(__file__))
-config_dir = os.path.join(base_dir, os.getenv("config_dir"))
-wallet_location = os.path.join(base_dir, os.getenv("wallet_location"))
-pem_content = os.getenv("pem_content")
-tns = os.getenv("tns")
-
-print("base_dir:", base_dir)
-print("config_dir:", config_dir)
-print("pem_content:", pem_content)
-print("wallet_location:", wallet_location)
-
 with open('./creds/ewallet.pem', 'w') as pem_file:
     pem_file.write(pem_content)
 
@@ -29,6 +18,18 @@ with open('./creds/tnsnames.ora', 'w') as pem_file:
 
 # Database connection function
 def get_db_connection():
+
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    config_dir = os.path.join(base_dir, os.getenv("config_dir"))
+    wallet_location = os.path.join(base_dir, os.getenv("wallet_location"))
+    pem_content = os.getenv("pem_content")
+    tns = os.getenv("tns")
+
+    print("base_dir:", base_dir)
+    print("config_dir:", config_dir)
+    print("pem_content:", pem_content)
+    print("wallet_location:", wallet_location)
+
     return oracledb.connect(
          config_dir=  config_dir,
          user=os.getenv("user"),
@@ -49,7 +50,7 @@ def water_consumption_data():
         # Connect to the database
         connection = get_db_connection()
         print(connection)
-        
+
         cursor = connection.cursor()
 
         sql = f"""
