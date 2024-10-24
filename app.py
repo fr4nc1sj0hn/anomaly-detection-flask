@@ -92,7 +92,7 @@ def water_consumption_data():
         SELECT CONSUMPTION_DATE, WATER_CONSUMPTION, STATUS 
         FROM water_consumption_data_v
         ORDER BY CONSUMPTION_DATE ASC
-        OFFSET {offset} ROWS FETCH NEXT 100 ROWS ONLY
+        FETCH FIRST 100 ROWS ONLY;
         """
 
         cursor.execute(sql)
